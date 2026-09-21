@@ -79,7 +79,13 @@ def test_text_generation_is_deterministic():
 def test_every_figure_is_drawn_and_two_builds_agree():
     from reproduce import figures
 
+    # A first build in a cold process is not comparable: matplotlib assembles its font
+    # cache as it goes, and the subset it embeds differs from the one a warm process
+    # embeds. That made this fail in continuous integration, which is always cold, while
+    # passing locally. The warm-up build is discarded and the two after it are compared,
+    # so what is tested is reproducibility rather than the state of a cache.
     shutil.rmtree(figures.OUT, ignore_errors=True)
+    figures.main()
     figures.main()
     drawn = sorted(f for f in os.listdir(figures.OUT) if f.endswith(".pdf"))
     assert len(drawn) == len(figures.FIGURES), f"drew {drawn}"

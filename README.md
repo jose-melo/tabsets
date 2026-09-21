@@ -1,4 +1,12 @@
+<img src="assets/logo.png" alt="" width="130" align="right">
+
 # TabSets
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22868208.svg)](https://doi.org/10.5281/zenodo.22868208)
+[![tests](https://github.com/jose-melo/tabsets/actions/workflows/ci.yml/badge.svg)](https://github.com/jose-melo/tabsets/actions/workflows/ci.yml)
+[![licence: MIT](https://img.shields.io/badge/licence-MIT-blue.svg)](LICENSE)
+[![data: CC BY 4.0](https://img.shields.io/badge/data-CC%20BY%204.0-blue.svg)](https://creativecommons.org/licenses/by/4.0/)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
 
 Prediction sets for tabular classifiers, computed from cached probabilities.
 

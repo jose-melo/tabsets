@@ -285,8 +285,15 @@ def write_shard(cells, path: str) -> int:
 
 
 def read_shard(path: str, names=None):
-    """Cells from a shard, optionally only those named."""
-    df = pd.read_parquet(path)
-    if names is not None:
-        df = df[df.name.isin(set(names))]
+    """Cells from a shard, or only those named.
+
+    Naming them pushes the filter into the file, so only the row groups that hold them
+    are read. Without that, asking for one cell costs the whole shard, which is hundreds
+    of megabytes, and a loop over cells becomes quadratic in the shard size.
+    """
+    if names is None:
+        df = pd.read_parquet(path)
+    else:
+        names = list(dict.fromkeys(names))
+        df = pd.read_parquet(path, filters=[("name", "in", set(names))])
     return [row_to_cell(r, path=f"{path}::{r['name']}") for _, r in df.iterrows()]

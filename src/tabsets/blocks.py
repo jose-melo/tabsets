@@ -210,6 +210,40 @@ def load(path):
     return got[0]
 
 
+def load_many(paths):
+    """Cells for many paths, reading each shard once.
+
+    :func:`load` is fine for a handful. Asking it for a block is not: a shard holds
+    hundreds of megabytes and it would be opened once per cell. This groups the request
+    by shard first, so a whole block costs one pass per shard rather than one per cell.
+    Order follows ``paths``.
+    """
+    from . import cache
+
+    names = [os.path.basename(p) for p in paths]
+    names = [n[:-4] if n.endswith(".npz") else n for n in names]
+    shards = shard_index()
+    if shards is None:
+        by_name = {n: cache.load_npz(p) for n, p in zip(names, paths)}
+        return [by_name[n] for n in names]
+
+    wanted = {}
+    for n in names:
+        shard = shards.get(n)
+        if shard is None:
+            raise KeyError(f"{n} is not in the released cache index")
+        wanted.setdefault(shard, []).append(n)
+    got = {}
+    for shard, ns in wanted.items():
+        for cell in cache.read_shard(os.path.join(cache_root(), shard), names=ns):
+            got[cell.name] = cell
+    missing = [n for n in names if n not in got]
+    if missing:
+        raise KeyError(f"{len(missing)} cells indexed but absent from their shard, "
+                       f"first is {missing[0]}")
+    return [got[n] for n in names]
+
+
 def map_cells(fn, blk: pd.DataFrame, workers: int = 7, chunksize: int = 16,
               key_cols=("path", "dataset", "task_type", "universe", "model", "family", "seed",
                         "K", "is_binary", "n_cal", "n_test")) -> pd.DataFrame:
