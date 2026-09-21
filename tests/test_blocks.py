@@ -69,6 +69,32 @@ def test_number_of_classes_is_taken_from_the_covariates():
     assert (common.K.values == cov.loc[common.dataset].values).all()
 
 
+def test_the_index_agrees_with_itself_about_the_class_count():
+    """Both columns carry the same upstream defect, so correcting one is not enough.
+
+    Five datasets are recorded with one class where their cells hold two columns of
+    probabilities. A reader filtering on ``n_classes`` would otherwise drop exactly the
+    cells whose ``K`` had just been repaired.
+    """
+    m = B.manifest()
+    assert (m.K == m.n_classes).all()
+    assert (m.n_classes >= 2).all()
+
+
+def test_a_cell_reads_its_class_count_off_its_own_probabilities():
+    """Whatever the index says, a cell counts classes from the width of its matrix."""
+    import numpy as np
+
+    from tabsets.cache import Cell
+
+    c = Cell(path="x", dataset="d", task_type="binclass", model="m", tag="", seed=0,
+             machine="t", p_cal=np.full((4, 2), 0.5), y_cal=np.zeros(4, int),
+             p_test=np.full((3, 2), 0.5), y_test=np.zeros(3, int),
+             idx_cal=np.arange(4), idx_test=np.arange(3), classes=np.arange(2),
+             x_cal_sha1="", x_test_sha1="", meta={})
+    assert c.n_classes == 2 and c.is_binary
+
+
 def test_families_partition_the_roster():
     assert set(B.TFM + B.GBDT + B.DEEP + B.CLASSIC) == set(ST.ORDER)
     assert len(B.TFM) == 13 and len(B.TFM_CORE) == 11

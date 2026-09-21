@@ -3,6 +3,7 @@
 
     python3 scripts/export_cache.py --source DIR --out DIR [--target-mb 400]
     python3 scripts/export_cache.py --source DIR --out DIR --verify
+    python3 scripts/export_cache.py --source DIR --out DIR --dry-run
 
 One file per cell is the right shape for a machine writing them one at a time and the
 wrong shape for handing 45,000 of them to someone else. Shards are packed dataset by
@@ -57,7 +58,7 @@ def plan(manifest: pd.DataFrame, sources: dict, target_bytes: int) -> tuple:
     return shards, missing
 
 
-def export(manifest_path: str, source: str, out: str, target_mb: int) -> int:
+def export(manifest_path: str, source: str, out: str, target_mb: int, dry_run: bool = False) -> int:
     man = pd.read_parquet(manifest_path) if manifest_path.endswith(".parquet") \
         else pd.read_csv(manifest_path, low_memory=False)
     sources = find_sources(source)
@@ -67,6 +68,12 @@ def export(manifest_path: str, source: str, out: str, target_mb: int) -> int:
               file=sys.stderr)
         for n in missing[:5]:
             print(f"    {n}", file=sys.stderr)
+
+    if dry_run:
+        sizes = [sum(os.path.getsize(sources[n]) for n in names) for names in shards]
+        print(f"{sum(len(x) for x in shards):,} cells -> {len(shards)} shards, "
+              f"{sum(sizes) / 1e9:.2f} GB, largest {max(sizes) / 1e6:.0f} MB")
+        return 1 if missing else 0
 
     os.makedirs(out, exist_ok=True)
     index, total = [], 0
@@ -115,12 +122,14 @@ def main(argv=None) -> int:
         "reproduce", "data", "manifest.parquet"))
     ap.add_argument("--target-mb", type=int, default=400)
     ap.add_argument("--verify", action="store_true")
+    ap.add_argument("--dry-run", action="store_true",
+                    help="report the plan and any missing cells; write nothing")
     ap.add_argument("--sample", type=int, default=200)
     ap.add_argument("--seed", type=int, default=0)
     a = ap.parse_args(argv)
     if a.verify:
         return verify(a.source, a.out, a.sample, a.seed)
-    return export(a.manifest, a.source, a.out, a.target_mb)
+    return export(a.manifest, a.source, a.out, a.target_mb, dry_run=a.dry_run)
 
 
 if __name__ == "__main__":
