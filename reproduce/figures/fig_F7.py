@@ -17,7 +17,7 @@ a 95 % cluster-bootstrap interval of the median (datasets resampled) and n print
 
 Reads:  data/P02_model_table_F1_a10.csv, data/P02_family_table_F1_a10.csv,
         data/P01_family_table_F1_a10.csv (the LAC own-threshold error, for the band in b),
-        ~/mugango/output/2026-09-19_tabsets-uq-analysis/results/P02_pairs_typed.csv (27 MB)
+        the per-pair transfer table (27 MB), an intermediate not shipped with the release
 Writes: data/P02_transfer_by_type.csv  (score,type,window,n_pairs,n_datasets,median,lo,hi,alpha)
         reproduce/out/figures/F7_transfer.pdf   (PNG preview too if PREVIEW_DIR is set)
 """
