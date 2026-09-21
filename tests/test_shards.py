@@ -99,3 +99,115 @@ def test_sets_built_from_a_shard_equal_sets_built_from_the_file():
 
 if __name__ == "__main__":
     run_module(globals())
+
+
+def _load_exporter():
+    import importlib.util
+
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    spec = importlib.util.spec_from_file_location(
+        "export_cache", os.path.join(root, "scripts", "export_cache.py"))
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def _two_files_one_name(directory):
+    """The same cell name in two places with different bytes, as a repeated run leaves."""
+    import pandas as pd
+
+    a, b = (os.path.join(directory, d) for d in ("kept", "other"))
+    os.makedirs(a), os.makedirs(b)
+    cell = make_cell(dataset="d", model="m", seed=1, K=3)
+    name = f"{cell.name}.npz"
+    np.savez(os.path.join(a, name), p_cal=cell.p_cal, y_cal=cell.y_cal,
+             p_test=cell.p_test, y_test=cell.y_test, idx_cal=cell.idx_cal,
+             idx_test=cell.idx_test, classes=cell.classes, x_cal_sha1="keep",
+             x_test_sha1="", meta=cache.json.dumps(cell.meta))
+    np.savez(os.path.join(b, name), p_cal=cell.p_cal * 0 + 1 / 3, y_cal=cell.y_cal,
+             p_test=cell.p_test * 0 + 1 / 3, y_test=cell.y_test, idx_cal=cell.idx_cal,
+             idx_test=cell.idx_test, classes=cell.classes, x_cal_sha1="other",
+             x_test_sha1="", meta=cache.json.dumps(cell.meta))
+    man = pd.DataFrame([dict(path=name, source_path=os.path.join("kept", name),
+                             dataset="d", model="m", seed="seed1")])
+    return man, name
+
+
+def test_the_export_reads_the_file_the_manifest_chose():
+    """A name can belong to several files, and only the manifest says which one counts.
+
+    Repeated runs leave the same cell name in more than one place with different bytes.
+    Resolving by name picks an arbitrary one, which silently packs results nobody
+    reported; on the real tree that was 11,164 cells of 45,871.
+    """
+    export_cache = _load_exporter()
+    with tempfile.TemporaryDirectory() as d:
+        man, name = _two_files_one_name(d)
+        found, missing = export_cache.find_sources(man, d)
+        assert not missing
+        assert found[name[:-4]] == os.path.join(d, "kept", name)
+        assert cache.load_npz(found[name[:-4]]).x_cal_sha1 == "keep"
+
+
+def test_an_ambiguous_name_without_a_recorded_source_is_refused():
+    """Without the column, a duplicated name has no right answer, so it is not guessed."""
+    export_cache = _load_exporter()
+    with tempfile.TemporaryDirectory() as d:
+        man, _ = _two_files_one_name(d)
+        try:
+            export_cache.find_sources(man.drop(columns=["source_path"]), d)
+            raise AssertionError("an ambiguous name was resolved anyway")
+        except SystemExit as exc:
+            assert "more than one file" in str(exc)
+
+
+def test_the_released_manifest_records_a_source_for_every_cell():
+    import pandas as pd
+
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    man = pd.read_parquet(os.path.join(root, "reproduce", "data", "manifest.parquet"))
+    assert "source_path" in man, "the manifest cannot identify which file each cell is"
+    assert man.source_path.notna().all()
+    assert man.source_path.nunique() == len(man) == man.path.nunique()
+
+
+def test_the_released_shards_reproduce_the_published_run_table():
+    """End to end: a number in the article, rebuilt from the cells as they ship.
+
+    Skipped unless TABSETS_CACHE points at an export, since the cells are deposited
+    separately. This is the check that caught the export reading the wrong file for
+    11,164 of 45,871 cells: the byte-level verification could not see it, because it
+    resolved its own reference the same wrong way.
+    """
+    import pandas as pd
+
+    from _testlib import require
+
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    if not os.path.exists(os.path.join(
+            os.path.expanduser(os.environ.get("TABSETS_CACHE", "~/.cache/tabsets/cells")),
+            "index.parquet")):
+        require("tabsets_cache_not_set")          # reported as a skip
+
+    from tabsets import blocks, metrics, sets
+
+    published = pd.read_parquet(os.path.join(root, "reproduce", "data", "runs_F1.parquet"))
+    blk = blocks.block("F1")
+    rng = np.random.default_rng(0)
+    pick = blk.iloc[rng.choice(len(blk), size=25, replace=False)]
+
+    rows = []
+    for _, c in pick.iterrows():
+        cell = blocks.load(c.path)
+        r = sets.sets_for_cell(cell, "lac", alpha=0.10)
+        d = metrics.decomposition(cell.y_test, r.sets)
+        rows.append(dict(dataset=c.dataset, model=c.model, seed=str(c.seed),
+                         eps=d["empty_rate"], sscsp=d["sscs_plus"],
+                         cov=metrics.coverage(cell.y_test, r.sets),
+                         width=metrics.mean_width(r.sets)))
+    m = pd.DataFrame(rows).merge(published, on=["dataset", "model", "seed"],
+                                 suffixes=("_s", "_r"))
+    assert len(m) == len(rows)
+    for col in ("eps", "sscsp", "cov", "width"):
+        worst = float(np.abs(m[f"{col}_s"] - m[f"{col}_r"]).max())
+        assert worst < 1e-12, f"{col} differs by {worst:.3e} from the published table"

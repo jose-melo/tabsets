@@ -16,6 +16,8 @@ comparison against a threshold, and a point sitting on that threshold would move
 from __future__ import annotations
 
 import argparse
+import datetime
+import json
 import os
 import sys
 
@@ -27,12 +29,38 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(
 from tabsets import cache  # noqa: E402
 
 
-def find_sources(source: str) -> dict:
-    """basename -> path, for every cell under ``source``."""
-    out = {}
+def find_sources(manifest: pd.DataFrame, source: str) -> tuple:
+    """cell name -> the file on disk the manifest chose, plus the names it could not find.
+
+    Resolving by name alone is wrong and was wrong here: 12,294 names exist in more than
+    one place under the source root, with different bytes, because a run was repeated.
+    The manifest's ``source_path`` records which of them the deduplication kept, and that
+    is the only thing that identifies it. A manifest without that column is resolved by
+    name, which is safe only when no name is duplicated, so that case is checked.
+    """
+    def stem(n):
+        return n[:-4] if n.endswith(".npz") else n
+
+    if "source_path" in manifest:
+        found, missing = {}, []
+        for name, rel in zip(manifest.path, manifest.source_path):
+            path = os.path.join(source, rel)
+            (found.__setitem__(stem(name), path) if os.path.exists(path)
+             else missing.append(stem(name)))
+        return found, missing
+
+    seen = {}
     for path in cache.find_npz(source):
-        out[os.path.basename(path)[:-4]] = path
-    return out
+        seen.setdefault(os.path.basename(path)[:-4], []).append(path)
+    ambiguous = {k: v for k, v in seen.items() if len(v) > 1}
+    if ambiguous:
+        raise SystemExit(
+            f"this manifest has no source_path and {len(ambiguous):,} cell names resolve "
+            f"to more than one file under {source}; regenerate the manifest with the "
+            f"column, or the export would pack an arbitrary one of them")
+    names = {stem(n) for n in manifest.path}
+    return ({k: v[0] for k, v in seen.items() if k in names},
+            sorted(names - set(seen)))
 
 
 def plan(manifest: pd.DataFrame, sources: dict, target_bytes: int) -> tuple:
@@ -61,8 +89,9 @@ def plan(manifest: pd.DataFrame, sources: dict, target_bytes: int) -> tuple:
 def export(manifest_path: str, source: str, out: str, target_mb: int, dry_run: bool = False) -> int:
     man = pd.read_parquet(manifest_path) if manifest_path.endswith(".parquet") \
         else pd.read_csv(manifest_path, low_memory=False)
-    sources = find_sources(source)
+    sources, unresolved = find_sources(man, source)
     shards, missing = plan(man, sources, target_mb * 1_000_000)
+    missing = sorted(set(missing) | set(unresolved))
     if missing:
         print(f"WARNING: {len(missing):,} cells in the manifest are absent from {source}",
               file=sys.stderr)
@@ -86,14 +115,34 @@ def export(manifest_path: str, source: str, out: str, target_mb: int, dry_run: b
                      for n, c in zip(names, cells))
         print(f"  {shard}  {len(names):>5} cells  {nbytes / 1e6:7.1f} MB")
     pd.DataFrame(index).to_parquet(os.path.join(out, "index.parquet"), index=False)
+
+    # Which manifest this was packed from, so a stale export cannot be uploaded by
+    # mistake: cells keep landing, and a directory of shards otherwise looks the same
+    # whether it was made an hour ago or a week ago.
+    provenance = dict(
+        exported_at=datetime.datetime.now().astimezone().isoformat(timespec="seconds"),
+        manifest=os.path.abspath(manifest_path),
+        manifest_cells=int(len(man)),
+        manifest_mtime=datetime.datetime.fromtimestamp(
+            os.path.getmtime(manifest_path)).astimezone().isoformat(timespec="seconds"),
+        cells_exported=len(index), cells_missing=len(missing),
+        shards=len(shards), bytes=total,
+    )
+    with open(os.path.join(out, "EXPORT.json"), "w") as fh:
+        json.dump(provenance, fh, indent=2)
+        fh.write("\n")
     print(f"{len(index):,} cells in {len(shards)} shards, {total / 1e9:.2f} GB -> {out}")
+    print(f"packed from a manifest of {len(man):,} cells, last written {provenance['manifest_mtime']}")
     return 0
 
 
 def verify(source: str, out: str, sample: int, seed: int) -> int:
     """Re-read the shards and compare every array against the file it came from."""
     index = pd.read_parquet(os.path.join(out, "index.parquet"))
-    sources = find_sources(source)
+    man = pd.read_parquet(os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "reproduce", "data", "manifest.parquet"))
+    sources, _ = find_sources(man, source)
     rng = np.random.default_rng(seed)
     pick = index.iloc[rng.choice(len(index), size=min(sample, len(index)), replace=False)]
     bad = 0
