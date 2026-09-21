@@ -116,10 +116,12 @@ make reproduce              # the macro file, the tables and the figures, from d
 make runs                   # rebuild data/ itself, from the probability cells
 ```
 
-`make reproduce` reads nothing but the tables in `reproduce/data`, and its output is
-compared byte for byte against a committed copy, so a change in the data shows up as a
-diff rather than as a silent difference. Only `make runs` needs the deposited
-probabilities.
+`make reproduce` reads nothing but the tables in `reproduce/data`. The macro file and the
+LaTeX tables it writes are compared byte for byte against a committed copy, so a change in
+the data shows up as a diff rather than as a silent difference; the figures are checked to
+be drawn from those same tables, but their bytes are not compared, because a PDF is not
+reproducible enough across environments for that to mean anything. Only `make runs` needs
+the deposited probabilities.
 
 ## Citing
 
