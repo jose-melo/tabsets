@@ -1,6 +1,10 @@
-<img src="assets/logo.png" alt="" width="130" align="right">
+<p align="center">
+  <img src="https://raw.githubusercontent.com/jose-melo/kernel-contraction-matching/main/docs/figures/logo.png" alt="KCM" width="180">
+</p>
 
-# TabSets
+<h1 align="center">TabSets: Benchmarking Commitment and Confidence of TFMs</h1>
+
+
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22868208.svg)](https://doi.org/10.5281/zenodo.22868208)
 [![tests](https://github.com/jose-melo/tabsets/actions/workflows/ci.yml/badge.svg)](https://github.com/jose-melo/tabsets/actions/workflows/ci.yml)
