@@ -1,0 +1,2 @@
+block,alpha,n_runs_fired,fill_accuracy,majority_share,breakeven_price,delivered_cov_top1
+F1,0.1,9660,0.7990171471302012,0.49086040304237794,0.20098285286979878,0.9223819899691665

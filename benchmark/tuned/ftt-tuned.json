@@ -1,0 +1,23 @@
+{
+    "general": {},
+    "model": {
+        "activation": "reglu",
+        "attention_dropout": 0.19172075941288885,
+        "d_ffn_factor": 1.7244565061724755,
+        "d_token": 8,
+        "ffn_dropout": 0.3958625190413323,
+        "initialization": "xavier",
+        "kv_compression": null,
+        "kv_compression_sharing": null,
+        "n_heads": 8,
+        "n_layers": 3,
+        "prenormalization": false,
+        "residual_dropout": 0.19273255210020587,
+        "token_bias": true
+    },
+    "training": {
+        "lr": 0.00013680095279726916,
+        "n_bins": 20,
+        "weight_decay": 0.0005981221901152554
+    }
+}

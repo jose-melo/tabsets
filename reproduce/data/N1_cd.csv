@@ -1,0 +1,5 @@
+block,alpha,score,metric,k,n_datasets,critical_difference,n_pairs_separated,n_pairs_total
+F1,0.1,lac,auc,22,113,3.1039708116234004,155,231
+F1,0.1,lac,commit_pt,22,113,3.1039708116234004,60,231
+F1,0.1,lac,sscsp,22,113,3.1039708116234004,134,231
+F1,0.1,lac,sscs,22,113,3.1039708116234004,1,231

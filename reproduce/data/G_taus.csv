@@ -1,0 +1,7 @@
+stat,value
+nCJTauAuc,0.89
+nCJTauSscs,0.78
+nCJTauCov,0.71
+nCJMaxAbsDeltaAuc,0.021
+nCJMaxAbsDeltaSscs,0.031
+nCReproMaxAbsDelta,0.0063

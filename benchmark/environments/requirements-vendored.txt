@@ -1,0 +1,7 @@
+# Packages imported by the vendored TALENT code under model/ that are NOT part of
+# the ESANN-era core pins (runbook env/requirements-esann-core.txt). Missing from
+# the tjepa / venv-tjepa envs on 2026-08-30 (gate G0): TabM died at
+# model/models/tabm.py:9 `import delu`. Pin = the Mac uq env (mac__uq__2026-08-30.txt).
+delu==0.0.23
+category_encoders
+einx

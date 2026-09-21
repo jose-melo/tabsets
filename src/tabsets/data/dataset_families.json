@@ -1,0 +1,69 @@
+{
+  "_source": "copied verbatim from ~/hplr-neurocomputing/analysis/families.json (lane S, tier0.py T0.3) on 2026-08-30; keep the two files identical",
+  "_comment": "Dataset families for the collapsed sensitivity analysis (T0.3). A family = datasets that share an OpenML/UCI source and are not independent samples (S2-mechanism-first--referee-methodology.md A2). Any published dataset NOT listed here is its own family. kc1 is added to the NASA MDP family (same PROMISE repository, same 21 static-code metrics as pc1/pc3/pc4); this is one step more conservative than A2's list.",
+  "families": {
+    "urbinati-microwave": [
+      "Contaminant-detection-in-packaged-cocoa-hazelnut-spread-jars-using-Microwaves-Sensing-and-Machine-Learning-9.0GHz(Urbinati)",
+      "Contaminant-detection-in-packaged-cocoa-hazelnut-spread-jars-using-Microwaves-Sensing-and-Machine-Learning-9.5GHz(Urbinati)",
+      "Contaminant-detection-in-packaged-cocoa-hazelnut-spread-jars-using-Microwaves-Sensing-and-Machine-Learning-10.0GHz(Urbinati)",
+      "Contaminant-detection-in-packaged-cocoa-hazelnut-spread-jars-using-Microwaves-Sensing-and-Machine-Learning-10.5GHz(Urbinati)",
+      "Contaminant-detection-in-packaged-cocoa-hazelnut-spread-jars-using-Microwaves-Sensing-and-Machine-Learning-11.0GHz(Urbinati)"
+    ],
+    "ada": [
+      "ada",
+      "ada_agnostic",
+      "ada_prior"
+    ],
+    "thyroid-uci": [
+      "thyroid",
+      "thyroid-ann",
+      "thyroid-dis",
+      "allbp",
+      "allrep",
+      "dis"
+    ],
+    "nasa-mdp": [
+      "pc1",
+      "pc3",
+      "pc4",
+      "kc1"
+    ],
+    "forex": [
+      "FOREX_audcad-day-High",
+      "FOREX_audchf-day-High",
+      "FOREX_audjpy-day-High",
+      "FOREX_cadjpy-day-High"
+    ],
+    "churn": [
+      "churn",
+      "Telecom_Churn_Dataset",
+      "telco-customer-churn",
+      "Bank_Customer_Churn_Dataset",
+      "shrutime"
+    ],
+    "wine-quality": [
+      "wine-quality-red",
+      "wine-quality-white"
+    ],
+    "waveform": [
+      "waveform-5000",
+      "waveform_database_generator_version_1"
+    ],
+    "ozone": [
+      "ozone_level",
+      "ozone-level-8hr"
+    ],
+    "water-quality": [
+      "water_quality",
+      "Water_Quality_and_Potability"
+    ],
+    "gametes": [
+      "GAMETES_Epistasis_2-Way_20atts_0.1H_EDM-1_1",
+      "GAMETES_Heterogeneity_20atts_1600_Het_0.4_0.2_50_EDM-2_001"
+    ],
+    "heloc": [
+      "heloc",
+      "FICO-HELOC-cleaned"
+    ]
+  }
+}

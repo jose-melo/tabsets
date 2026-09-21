@@ -1,0 +1,10 @@
+grid,test,model,statistic,n,value,lo,hi,p,W,L,T
+15-model,ensemble 1 to 32,PFN-v2,paired d eps_pt (32 - 1),24,0.0009293461697627015,-0.0010036209798517438,0.0028185954844039385,0.38037109375,9.0,3.0,12.0
+15-model,ensemble 1 to 32,tabicl,paired d eps_pt (32 - 1),24,0.0015436661636410367,-0.0014969883470871634,0.0049811363883530335,0.541748046875,6.0,7.0,11.0
+15-model,temperature 1.0 vs 0.9,all binary,two-class cells with bitwise identical LAC sets (strict rule),11249,11170.0,,,,,,
+15-model,temperature 1.0 vs 0.9,all binary,max raw-score gap of any differing comparison,7930350,5.960464477539063e-08,,,,,,
+15-model,temperature 1.0 vs 0.9,PFN-v2,paired d eps_pt multiclass (1.0 - 0.9),37,-5.8e-05,,,0.869488,,,
+15-model,temperature 1.0 vs 0.9,tabicl,paired d eps_pt multiclass (1.0 - 0.9),37,0.000108,,,0.129395,,,
+15-model,temperature 1.0 vs 0.9,tabpfn3,paired d eps_pt multiclass (1.0 - 0.9),37,6.2e-05,,,0.714844,,,
+15-model,log-loss tuning of the boosters,xgboost+lightgbm,"TFM - boosters eps_pt, accuracy-tuned, widest-gap datasets",20,0.02325803036124662,0.014892927795680522,0.032406133982147936,1.9073486328125e-06,20.0,0.0,0.0
+15-model,log-loss tuning of the boosters,xgboost+lightgbm,"TFM - boosters eps_pt, log-loss-tuned, widest-gap datasets",20,0.02288301775180537,0.01406858563031995,0.03249164681357794,5.7220458984375e-06,19.0,1.0,0.0

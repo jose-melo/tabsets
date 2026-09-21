@@ -1,0 +1,25 @@
+{
+    "general": {},
+    "model": {
+        "arch_type": "tabm",
+        "backbone": {
+            "d_block": 471,
+            "dropout": 0.32294705653332806,
+            "n_blocks": 3,
+            "type": "MLP"
+        },
+        "k": 32,
+        "num_embeddings": {
+            "d_embedding": 45,
+            "frequency_scale": 1.1477083870158953,
+            "lite": true,
+            "n_frequencies": 60,
+            "type": "PLREmbeddings"
+        }
+    },
+    "training": {
+        "lr": 0.0005539206377511997,
+        "n_bins": 203,
+        "weight_decay": 0.0014135935551752314
+    }
+}

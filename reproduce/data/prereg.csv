@@ -1,0 +1,21 @@
+n,hypothesis,outcome,where,outcome_class
+1,a threshold read from the model's own probabilities holds the level,held,Section~\ref{sec:labelfree:threshold},held
+2,under randomised adaptive sets the threshold is the constant $1 - \alpha$ and transfers within the family,held,Section~\ref{sec:labelfree:constant},held
+3,a set delivers the coverage its contained mass promises,held on the stored score,Section~\ref{sec:labelfree:mass}; on the deterministic score the residual follows accuracy,qualified
+4,class-conditional and rank-marginal versions of the self-predicted threshold hold,held,not used; the sentence its rejection would have licensed is false on the numbers and is not written,held
+5,the empty sets of the randomised adaptive score are confident answers the randomisation withheld,held in part,\ref{app:C}; no family statement,qualified
+6,the family gap in abstention is what remains once the two identities are printed,held,Sections~\ref{sec:commitment:levels} and \ref{sec:abstention},held
+7,the calibration curve near the refusal threshold flattens with calibration size for the foundation models,did not hold,no scaling statement about the foundation models is made,rejected
+8,"a foundation model's low confidence lands where other families disagree, and its errors do not",did not hold,Section~\ref{sec:labelfree:limits}: the property belongs to probability averaging,rejected
+9,confident answers are as truthful at a hundred thousand rows as at a thousand,not decidable,Section~\ref{sec:discussion}: the equivalence margin is below what the calibration sizes resolve,undecided
+10,a foundation model's confidence still speaks when it is not the best model,did not hold on the decisive unit,no such sentence,rejected
+11,recalibrating before building the sets leaves them alone for one family,"did not hold, for either family",Section~\ref{sec:labelfree:limits},rejected
+12,five vendors share one empirical-Bayes update rule,did not hold,no shared-mechanism statement,rejected
+13,thirteen checkpoints share one prior misfit,did not hold,Section~\ref{sec:labelfree:limits},rejected
+14,the one controlled pretraining-data ablation leaves a per-dataset trace,did not hold,"Section~\ref{sec:discussion}, sixth limitation",rejected
+15,a conformal set is reproducible only when nothing was tuned,did not hold,"\ref{app:C}, noise floor",rejected
+16,"the released cache holds the level it enforces, for every model and score","held under the least ambiguous score, not for the stored adaptive score","Section~\ref{sec:tabsets:release}, \ref{app:E}",qualified
+17,"seeds are not replicates of test points, and the empty-set claim has a price in units",held,"Section~\ref{sec:setup:stats}, \ref{app:D}",held
+18,the fixed test files of the source benchmark are exchangeable with their pools,not evaluable as posed,"\ref{app:C}: the deterministic adaptive score over-covers by construction on every dataset, so the test cannot read exchangeability off it",undecided
+19,the released datasets carry a group leak and labels no model gets right,held in part,the release documents the flagged datasets,qualified
+20,"the verdict survives the model set, and the conference finding survives the new grid",the model-set verdict did not hold in one form,Section~\ref{sec:discussion}: nine of ten efficiency criteria follow accuracy,rejected

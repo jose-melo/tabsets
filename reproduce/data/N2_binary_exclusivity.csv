@@ -1,0 +1,2 @@
+block,alpha,n_binary_runs,n_both_empty_and_full,n_empty_only,n_full_only,n_neither,share_onset_within_2_over_ncal,median_onset_gap
+F1,0.1,16280,0,5841,10255,184,0.826044226044226,0.0022063074171860576

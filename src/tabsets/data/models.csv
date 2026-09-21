@@ -1,0 +1,23 @@
+model,display,family,package_version,checkpoint,tuning,context_cap,temperature,class_ceiling,citekey
+tabpfn,TabPFN v1,TFM,vendored v1,epoch 42 classifier,none,"3,000 rows",n.r.,10,hollmann2023tabpfn
+PFN-v2,TabPFN v2,TFM,tabpfn 2.1.1,v2 classifier,none,"10,000 rows",0.9,10,hollmann2025tabpfnv2
+tabpfn25,TabPFN 2.5,TFM,tabpfn 8.2.0,v2.5 default (real-data fine-tuned),none,n.r.,0.9,10,grinsztajn2025tabpfn25
+tabpfn25b,"TabPFN 2.5, synthetic-only",TFM,tabpfn 8.2.0,v2.5 default-2 (synthetic pretraining only),none,n.r.,0.9,10,grinsztajn2025tabpfn25
+tabpfn26,TabPFN 2.6,TFM,tabpfn 8.2.0,v2.6 default,none,n.r.,0.9,10,grinsztajn2026tabpfn3
+tabpfn3,TabPFN 3,TFM,tabpfn 8.2.0,v3 default,none,auto-scaling off,0.9,none,grinsztajn2026tabpfn3
+tabicl,TabICL v1,TFM,tabicl 2.1.1,v1.1 (2026-05-06),none,none,0.9,10,qu2025tabicl
+tabiclv2,TabICL v2,TFM,tabicl 2.1.1,v2 (2026-02-12),none,none,0.9,none (hierarchical mode),qu2026tabiclv2
+mitra,Mitra,TFM,AutoGluon Mitra,classifier v1,none,"8,192 / 1,024 rows",n.r.,10,zhang2025mitra
+mitra@v2,Mitra 2,TFM,AutoGluon Mitra,"mitra-classifier-2 (same architecture, new weights)",none,"8,192 / 1,024 rows",n.r.,10,zhang2025mitra
+tabldm,TabLDM,TFM,Xiaomi-TabLDM 0.1.0,release checkpoint,none,n.r.,1.0,10,tabldm2026
+tabfm,TabFM,TFM,TabFM 1.0.1,release checkpoint,none,n.r.,n.r.,10,tabfm2026
+exaone,EXAONE Tabular,TFM,EXAONE Tabular 1.0,release checkpoint,none,n.r.,n.r.,10,eo2026exaone
+catboost,CatBoost,GBDT,catboost 1.2.7,--,25 TPE trials,--,--,none,prokhorenkova2018catboost
+lightgbm,LightGBM,GBDT,lightgbm 4.5.0,--,25 TPE trials,--,--,none,ke2017lightgbm
+xgboost,XGBoost,GBDT,xgboost 3.0.5,--,25 TPE trials,--,--,none,chen2016xgboost
+mlp,MLP,deep,TALENT,--,25 TPE trials + early stopping,--,--,none,gorishniy2021revisiting
+resnet,ResNet,deep,TALENT,--,25 TPE trials + early stopping,--,--,none,gorishniy2021revisiting
+ftt,FT-Transformer,deep,TALENT,--,25 TPE trials + early stopping,--,--,none,gorishniy2021revisiting
+tabm,TabM,deep,tabm 0.0.3,"k = 32 heads, probabilities averaged",25 TPE trials + early stopping,--,--,none,gorishniy2024tabm
+LogReg,logistic regression,classic,scikit-learn 1.6.1,--,25 TPE trials,--,--,none,
+knn,k-nearest neighbours,classic,scikit-learn 1.6.1,--,25 TPE trials,--,--,none,

@@ -1,0 +1,3 @@
+stat,label,n,mean,ci_lo,ci_hi,W,L,T,wilcoxon_p
+lf_err,TFM - GBDT: lf_err on never-abstaining datasets,51,-0.047524312964427204,-0.05530964788882568,-0.03989186884973258,0,51,0,5.145276051717655e-10
+lftr_err,TFM - GBDT: lftr_err on never-abstaining datasets,51,-0.047737460736610365,-0.055611877225962086,-0.03995846512724332,0,51,0,5.145276051717655e-10
