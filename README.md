@@ -2,12 +2,27 @@
 
 Prediction sets for tabular classifiers, computed from cached probabilities.
 
+![The TabSets pipeline: 218 datasets and 22 models in four families, the calibration and
+test probabilities of every run released, and the conformal sets and trade-off computed
+from them](assets/F2_pipeline.png)
+
+*What one run produces and what is released from it. Figure 1 of the article.*
+
 A classifier that is right most of the time can still refuse to name any label at all.
 At a requested level of 90 %, the conformal set of a confident model is sometimes empty,
 and an empty set is not a cautious answer but a missing one. TabSets measures that: how
 often a model commits to at least one label, and how well it covers the truth where it
 does. The two order the model families in opposite directions, which is why the usual
 single score hides the trade-off rather than showing it.
+
+![Performance against confidence, and the same split into performance against commitment
+and performance against confidence on committed cases. The foundation models commit less
+and cover better where they commit](assets/F1_teaser.png)
+
+*Performance against a single confidence score, left, and the same quantity split in two.
+The foundation models commit less often, middle, and cover the truth better where they do
+commit, right. Figure 3 of the article; each marker is one model, averaged over the
+datasets of the main block and ten seeds.*
 
 Everything here is a function of four arrays one run produces: the class probabilities
 and labels on a calibration split, and the same on a test split. No model is refitted to
